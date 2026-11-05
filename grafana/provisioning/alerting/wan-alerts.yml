@@ -1,0 +1,211 @@
+{
+ "apiVersion": 1,
+ "groups": [
+  {
+   "orgId": 1,
+   "name": "wan",
+   "folder": "Xiaomi BE6500",
+   "interval": "30s",
+   "rules": [
+    {
+     "uid": "wan1-down",
+     "title": "WAN1 caiu",
+     "condition": "C",
+     "for": "1m",
+     "noDataState": "Alerting",
+     "execErrState": "Error",
+     "labels": {
+      "severity": "critical"
+     },
+     "annotations": {
+      "summary": "WAN1 est\u00e1 desconectada (status != 2) h\u00e1 mais de 1 minuto"
+     },
+     "data": [
+      {
+       "refId": "A",
+       "relativeTimeRange": {
+        "from": 300,
+        "to": 0
+       },
+       "datasourceUid": "prometheus",
+       "model": {
+        "expr": "(router_wan_up{wan=\"WAN1\"} == bool 0)",
+        "instant": true,
+        "refId": "A"
+       }
+      },
+      {
+       "refId": "B",
+       "relativeTimeRange": {
+        "from": 300,
+        "to": 0
+       },
+       "datasourceUid": "__expr__",
+       "model": {
+        "type": "reduce",
+        "expression": "A",
+        "reducer": "last",
+        "refId": "B"
+       }
+      },
+      {
+       "refId": "C",
+       "relativeTimeRange": {
+        "from": 300,
+        "to": 0
+       },
+       "datasourceUid": "__expr__",
+       "model": {
+        "type": "threshold",
+        "expression": "B",
+        "conditions": [
+         {
+          "evaluator": {
+           "type": "gt",
+           "params": [
+            0
+           ]
+          }
+         }
+        ],
+        "refId": "C"
+       }
+      }
+     ]
+    },
+    {
+     "uid": "wan2-down",
+     "title": "WAN2 caiu (multiwan ativo)",
+     "condition": "C",
+     "for": "1m",
+     "noDataState": "Alerting",
+     "execErrState": "Error",
+     "labels": {
+      "severity": "critical"
+     },
+     "annotations": {
+      "summary": "WAN2 est\u00e1 desconectada com o multiwan habilitado"
+     },
+     "data": [
+      {
+       "refId": "A",
+       "relativeTimeRange": {
+        "from": 300,
+        "to": 0
+       },
+       "datasourceUid": "prometheus",
+       "model": {
+        "expr": "(router_wan_up{wan=\"WAN2\"} == bool 0) * on() group_left() router_multiwan_enabled",
+        "instant": true,
+        "refId": "A"
+       }
+      },
+      {
+       "refId": "B",
+       "relativeTimeRange": {
+        "from": 300,
+        "to": 0
+       },
+       "datasourceUid": "__expr__",
+       "model": {
+        "type": "reduce",
+        "expression": "A",
+        "reducer": "last",
+        "refId": "B"
+       }
+      },
+      {
+       "refId": "C",
+       "relativeTimeRange": {
+        "from": 300,
+        "to": 0
+       },
+       "datasourceUid": "__expr__",
+       "model": {
+        "type": "threshold",
+        "expression": "B",
+        "conditions": [
+         {
+          "evaluator": {
+           "type": "gt",
+           "params": [
+            0
+           ]
+          }
+         }
+        ],
+        "refId": "C"
+       }
+      }
+     ]
+    },
+    {
+     "uid": "router-unreachable",
+     "title": "Roteador sem resposta",
+     "condition": "C",
+     "for": "2m",
+     "noDataState": "Alerting",
+     "execErrState": "Error",
+     "labels": {
+      "severity": "critical"
+     },
+     "annotations": {
+      "summary": "O exporter n\u00e3o consegue coletar dados do roteador"
+     },
+     "data": [
+      {
+       "refId": "A",
+       "relativeTimeRange": {
+        "from": 300,
+        "to": 0
+       },
+       "datasourceUid": "prometheus",
+       "model": {
+        "expr": "(1 - router_scrape_success)",
+        "instant": true,
+        "refId": "A"
+       }
+      },
+      {
+       "refId": "B",
+       "relativeTimeRange": {
+        "from": 300,
+        "to": 0
+       },
+       "datasourceUid": "__expr__",
+       "model": {
+        "type": "reduce",
+        "expression": "A",
+        "reducer": "last",
+        "refId": "B"
+       }
+      },
+      {
+       "refId": "C",
+       "relativeTimeRange": {
+        "from": 300,
+        "to": 0
+       },
+       "datasourceUid": "__expr__",
+       "model": {
+        "type": "threshold",
+        "expression": "B",
+        "conditions": [
+         {
+          "evaluator": {
+           "type": "gt",
+           "params": [
+            0
+           ]
+          }
+         }
+        ],
+        "refId": "C"
+       }
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}
