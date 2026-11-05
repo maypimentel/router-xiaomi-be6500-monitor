@@ -15,3 +15,10 @@ Grafana: http://localhost:3000 (admin/admin por padrão) → dashboard "Xiaomi B
 - `api/xqnetwork/pppoe_status?wan_name=WAN1|WAN2` – status/erro/velocidade de cada WAN
 
 `tools/discover.py` lista as APIs que a página principal usa (útil se o firmware mudar).
+
+## Alertas no Telegram (atualmente DESATIVADO)
+Para ativar: `rm grafana/provisioning/alerting/telegram-off.yml && mv grafana/provisioning/alerting/telegram.yml.disabled grafana/provisioning/alerting/telegram.yml`, depois siga os passos abaixo.
+
+1. Crie um bot com o `@BotFather` e copie o token.
+2. Mande uma mensagem ao bot (ou adicione-o ao grupo) e obtenha o chat id em `https://api.telegram.org/bot<TOKEN>/getUpdates`.
+3. Preencha `TELEGRAM_BOT_TOKEN` e `TELEGRAM_CHAT_ID` no `.env` e rode `docker compose up -d`.

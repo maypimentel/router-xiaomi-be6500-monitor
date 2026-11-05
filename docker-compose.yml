@@ -23,12 +23,25 @@ services:
     restart: unless-stopped
     ports:
       - "${GRAFANA_PORT:-3000}:3000"
+    # O Grafana converte chat ids numéricos em número ao expandir variáveis, e o
+    # contact point exige string. Por isso os placeholders são substituídos aqui,
+    # antes de o Grafana ler o provisionamento.
+    entrypoint:
+      - sh
+      - -c
+      - |
+        cp -r /provisioning-src /tmp/provisioning
+        [ -f /tmp/provisioning/alerting/telegram.yml ] && sed -i "s|__TELEGRAM_BOT_TOKEN__|$$TELEGRAM_BOT_TOKEN|; s|__TELEGRAM_CHAT_ID__|$$TELEGRAM_CHAT_ID|" /tmp/provisioning/alerting/telegram.yml
+        exec /run.sh
     environment:
+      GF_PATHS_PROVISIONING: /tmp/provisioning
       GF_SECURITY_ADMIN_USER: ${GRAFANA_USER:-admin}
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-admin}
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
+      TELEGRAM_CHAT_ID: ${TELEGRAM_CHAT_ID:-}
     volumes:
       - grafana-data:/var/lib/grafana
-      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/provisioning:/provisioning-src:ro
       - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
     depends_on: [prometheus]
 

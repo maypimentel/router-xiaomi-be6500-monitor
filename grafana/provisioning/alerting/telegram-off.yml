@@ -1,0 +1,9 @@
+# Telegram desativado: remove o contact point e restaura a política padrão.
+# Para reativar: apague este arquivo e renomeie telegram.yml.disabled -> telegram.yml
+# (veja o README).
+apiVersion: 1
+resetPolicies:
+  - 1
+deleteContactPoints:
+  - orgId: 1
+    uid: telegram-wan
