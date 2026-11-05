@@ -1,0 +1,37 @@
+services:
+  exporter:
+    build: .
+    restart: unless-stopped
+    environment:
+      ROUTER_HOST: ${ROUTER_HOST:-192.168.31.1}
+      ROUTER_PASSWORD: ${ROUTER_PASSWORD:?defina ROUTER_PASSWORD no .env}
+      SCRAPE_INTERVAL: ${SCRAPE_INTERVAL:-15}
+
+  prometheus:
+    image: prom/prometheus:v2.55.1
+    restart: unless-stopped
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.retention.time=${RETENTION:-90d}
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    depends_on: [exporter]
+
+  grafana:
+    image: grafana/grafana:11.3.0
+    restart: unless-stopped
+    ports:
+      - "${GRAFANA_PORT:-3000}:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-admin}
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on: [prometheus]
+
+volumes:
+  prometheus-data:
+  grafana-data:
