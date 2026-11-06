@@ -30,6 +30,9 @@ services:
       - sh
       - -c
       - |
+        # Recria a cópia a cada início: se /tmp/provisioning já existir (container
+        # reiniciado), o cp -r criaria uma subpasta e o Grafana leria arquivos antigos.
+        rm -rf /tmp/provisioning
         cp -r /provisioning-src /tmp/provisioning
         [ -f /tmp/provisioning/alerting/telegram.yml ] && sed -i "s|__TELEGRAM_BOT_TOKEN__|$$TELEGRAM_BOT_TOKEN|; s|__TELEGRAM_CHAT_ID__|$$TELEGRAM_CHAT_ID|" /tmp/provisioning/alerting/telegram.yml
         exec /run.sh
