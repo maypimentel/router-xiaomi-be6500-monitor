@@ -1,0 +1,142 @@
+{
+ "lanmask": "255.255.255.0",
+ "list": [],
+ "code": 0,
+ "devicelist": [
+  {
+   "isap": 0,
+   "parent": "",
+   "ip": "192.168.31.101",
+   "port": 1,
+   "hostname": "notebook-sala",
+   "mac": "02:00:00:00:00:01",
+   "origin_name": "notebook-sala",
+   "ptype": 0,
+   "online": 1,
+   "authority": {
+    "wan": 1,
+    "pridisk": 0,
+    "admin": 1,
+    "lan": 1
+   },
+   "company": {
+    "priority": 2,
+    "type": {
+     "p": 0,
+     "c": 0,
+     "n": ""
+    },
+    "name": "",
+    "icon": ""
+   },
+   "push": 0,
+   "name": "notebook-sala",
+   "times": 0,
+   "type": "wifi",
+   "statistics": {
+    "mac": "02:00:00:00:00:01",
+    "maxdownloadspeed": "9000",
+    "upload": "52428800",
+    "upspeed": "1200",
+    "ip": "192.168.31.101",
+    "downspeed": "350000",
+    "online": "28800",
+    "dev": "wl0",
+    "maxuploadspeed": "4000",
+    "download": "2147483648"
+   },
+   "ctype": 0,
+   "tag": 0
+  },
+  {
+   "isap": 0,
+   "parent": "",
+   "ip": "192.168.31.102",
+   "port": 1,
+   "hostname": "sensor-esp",
+   "mac": "02:00:00:00:00:02",
+   "origin_name": "sensor-esp",
+   "ptype": 0,
+   "online": 1,
+   "authority": {
+    "wan": 1,
+    "pridisk": 0,
+    "admin": 1,
+    "lan": 1
+   },
+   "company": {
+    "priority": 2,
+    "type": {
+     "p": 0,
+     "c": 0,
+     "n": ""
+    },
+    "name": "",
+    "icon": ""
+   },
+   "push": 0,
+   "name": "",
+   "times": 0,
+   "type": "wifi",
+   "statistics": {
+    "mac": "02:00:00:00:00:02",
+    "maxdownloadspeed": "9000",
+    "upload": "301610",
+    "upspeed": "0",
+    "ip": "192.168.31.102",
+    "downspeed": "8",
+    "online": "27800",
+    "dev": "wl1",
+    "maxuploadspeed": "4000",
+    "download": "258568"
+   },
+   "ctype": 0,
+   "tag": 0
+  },
+  {
+   "isap": 0,
+   "parent": "",
+   "ip": "192.168.31.103",
+   "port": 1,
+   "hostname": "tv",
+   "mac": "02:00:00:00:00:03",
+   "origin_name": "tv",
+   "ptype": 0,
+   "online": 0,
+   "authority": {
+    "wan": 1,
+    "pridisk": 0,
+    "admin": 1,
+    "lan": 1
+   },
+   "company": {
+    "priority": 2,
+    "type": {
+     "p": 0,
+     "c": 0,
+     "n": ""
+    },
+    "name": "",
+    "icon": ""
+   },
+   "push": 0,
+   "name": "tv",
+   "times": 0,
+   "type": "lan",
+   "statistics": {
+    "mac": "02:00:00:00:00:03",
+    "maxdownloadspeed": "9000",
+    "upload": "0",
+    "upspeed": "0",
+    "ip": "192.168.31.103",
+    "downspeed": "0",
+    "online": "0",
+    "dev": "",
+    "maxuploadspeed": "4000",
+    "download": "0"
+   },
+   "ctype": 0,
+   "tag": 0
+  }
+ ]
+}
