@@ -33,3 +33,11 @@ Para ativar: `rm grafana/provisioning/alerting/telegram-off.yml && mv grafana/pr
 1. Crie um bot com o `@BotFather` e copie o token.
 2. Mande uma mensagem ao bot (ou adicione-o ao grupo) e obtenha o chat id em `https://api.telegram.org/bot<TOKEN>/getUpdates`.
 3. Preencha `TELEGRAM_BOT_TOKEN` e `TELEGRAM_CHAT_ID` no `.env` e rode `docker compose up -d`.
+
+## Testes
+Os testes usam respostas fictícias do roteador (`tests/fixtures/`), sem acesso à rede:
+```
+pip install -r requirements.txt -r requirements-dev.txt
+python -m pytest
+```
+Sem Python local, rode num container: `docker run --rm -v "$PWD":/app -w /app python:3.12-slim sh -c "pip install -q -r requirements.txt -r requirements-dev.txt && python -m pytest"`.

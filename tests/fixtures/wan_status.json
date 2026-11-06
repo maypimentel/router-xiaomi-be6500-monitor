@@ -1,0 +1,32 @@
+{
+ "ipv6": {
+  "code": 0,
+  "wan6_info": {
+   "ip6addr": [
+    "2001:db8:1::10/64"
+   ],
+   "ifname": "eth0.1",
+   "dns": [
+    "2001:db8::53"
+   ],
+   "up": true,
+   "ip6gw": "fe80::1",
+   "ipv6_mode": "pi_relay"
+  }
+ },
+ "code": 0,
+ "ipv4": {
+  "proto": "dhcp",
+  "dns": [
+   "192.0.2.53"
+  ],
+  "code": 0,
+  "status": 2,
+  "wanSpeed": "1000",
+  "gw": "192.0.2.1",
+  "ip": {
+   "mask": "255.255.255.0",
+   "address": "192.0.2.10"
+  }
+ }
+}

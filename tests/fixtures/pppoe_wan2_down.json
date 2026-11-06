@@ -1,0 +1,16 @@
+{
+ "proto": "pppoe",
+ "dns": [],
+ "code": 1604,
+ "wanSpeed": "",
+ "ip": {
+  "mask": "",
+  "address": ""
+ },
+ "perror": 35,
+ "msg": "无法连接服务器(678)",
+ "status": 3,
+ "gw": "",
+ "errcode": 678,
+ "errtype": 2
+}

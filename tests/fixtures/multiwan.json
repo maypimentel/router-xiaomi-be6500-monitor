@@ -1,0 +1,24 @@
+{
+ "multiwan": {
+  "enable": 1,
+  "policy": {
+   "bandwidth_wan1": "500",
+   "currwan": "wan_2",
+   "weight1": "3",
+   "bandwidth_wan2": "300",
+   "mode": 1,
+   "weight2": "1"
+  },
+  "port_map": [
+   {
+    "name": "WAN1",
+    "port": "1"
+   },
+   {
+    "name": "WAN2",
+    "port": "4"
+   }
+  ]
+ },
+ "code": 0
+}
