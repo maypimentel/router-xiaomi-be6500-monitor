@@ -4,13 +4,16 @@ on:
   pull_request:
     # opened = abertura; synchronize = novos commits no PR; reopened = PR reaberto
     types: [opened, synchronize, reopened]
+  push:
+    branches: [main]
 
 permissions:
   contents: read
 
+# Em PR, um novo commit cancela a execução anterior; na main cada push roda até o fim.
 concurrency:
-  group: tests-${{ github.event.pull_request.number }}
-  cancel-in-progress: true
+  group: tests-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   pytest:
