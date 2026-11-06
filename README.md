@@ -2,6 +2,7 @@
 
 [![Testes](https://github.com/maypimentel/router-xiaomi-be6500-monitor/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/maypimentel/router-xiaomi-be6500-monitor/actions/workflows/tests.yml?query=branch%3Amain)
 [![Licença: MIT](https://img.shields.io/badge/licen%C3%A7a-MIT-blue.svg)](LICENSE)
+[![Python 3.14](https://img.shields.io/badge/python-3.14-3776AB.svg?logo=python&logoColor=white)](https://www.python.org/downloads/release/python-3140/)
 
 <p align="center">
   <img src="https://cdn.cnbj1.fds.api.mi-img.com/product-images/xiaomi-routers/be-6500b8474/062.jpg" alt="Roteador Xiaomi BE6500" width="600">
@@ -47,7 +48,7 @@ ROUTER_PASSWORD='sua-senha' python tools/discover.py
 ```
 Ou num container, sem Python local, usando o `ROUTER_PASSWORD` do `.env`:
 ```
-docker run --rm --env-file .env -v "$PWD":/app -w /app python:3.12-slim \
+docker run --rm --env-file .env -v "$PWD":/app -w /app python:3.14-slim \
   sh -c "pip install -q -r requirements.txt && python tools/discover.py"
 ```
 
@@ -66,4 +67,4 @@ Os testes usam respostas fictícias do roteador (`tests/fixtures/`), sem acesso 
 pip install -r requirements.txt -r requirements-dev.txt
 python -m pytest
 ```
-Sem Python local, rode num container: `docker run --rm -v "$PWD":/app -w /app python:3.12-slim sh -c "pip install -q -r requirements.txt -r requirements-dev.txt && python -m pytest"`.
+Sem Python local, rode num container: `docker run --rm -v "$PWD":/app -w /app python:3.14-slim sh -c "pip install -q -r requirements.txt -r requirements-dev.txt && python -m pytest"`.
