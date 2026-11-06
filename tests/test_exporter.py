@@ -93,11 +93,21 @@ def test_collect_clients_totais(fake_router, metric):
 def test_collect_clients_estatisticas(fake_router, metric):
     exporter.collect_clients(fake_router)
 
-    assert metric("router_client_download_bytes_per_second", **NOTE) == 350000
-    assert metric("router_client_upload_bytes_per_second", **NOTE) == 1200
-    assert metric("router_client_download_bytes", **NOTE) == 2147483648
-    assert metric("router_client_upload_bytes", **NOTE) == 52428800
-    assert metric("router_client_online_seconds", **NOTE) == 28800
+    mac = NOTE["mac"]
+    assert metric("router_client_download_bytes_per_second", mac=mac) == 350000
+    assert metric("router_client_upload_bytes_per_second", mac=mac) == 1200
+    assert metric("router_client_download_bytes", mac=mac) == 2147483648
+    assert metric("router_client_upload_bytes", mac=mac) == 52428800
+    assert metric("router_client_online_seconds", mac=mac) == 28800
+
+
+def test_collect_clients_metricas_identificadas_so_pelo_mac(fake_router):
+    exporter.collect_clients(fake_router)
+
+    for gauge in (exporter.cl_up_speed, exporter.cl_down_speed, exporter.cl_up_total,
+                  exporter.cl_down_total, exporter.cl_online_s):
+        labels = {tuple(s.labels) for m in gauge.collect() for s in m.samples}
+        assert labels == {("mac",)}, gauge
 
 
 def test_collect_clients_info(fake_router, metric):
@@ -112,7 +122,27 @@ def test_collect_clients_usa_hostname_sem_nome(fake_router, metric):
     exporter.collect_clients(fake_router)
 
     # "name" vazio na fixture -> cai para o hostname
-    assert metric("router_client_download_bytes_per_second", **ESP) == 8
+    assert metric("router_client_info", **ESP, type="wifi", band="wl1") == 1
+
+
+def test_collect_clients_renomear_mantem_a_serie(router_routes, metric):
+    exporter.collect_clients(FakeRouter(router_routes))
+
+    data = load("macbind_info.json")
+    note = next(d for d in data["devicelist"] if d["mac"] == NOTE["mac"])
+    note["name"] = "notebook-escritorio"
+    note["ip"] = note["statistics"]["ip"] = "192.168.31.150"
+    router_routes[MACBIND] = data
+    exporter.collect_clients(FakeRouter(router_routes))
+
+    # a métrica continua na mesma série (só o MAC identifica)...
+    assert metric("router_client_download_bytes", mac=NOTE["mac"]) == 2147483648
+    # ...e só o info muda de nome/IP
+    assert metric("router_client_info", **NOTE, type="wifi", band="wl0") is None
+    assert metric(
+        "router_client_info", mac=NOTE["mac"], name="notebook-escritorio",
+        ip="192.168.31.150", type="wifi", band="wl0",
+    ) == 1
 
 
 def test_collect_clients_remove_quem_saiu_da_lista(router_routes, metric):
@@ -126,8 +156,8 @@ def test_collect_clients_remove_quem_saiu_da_lista(router_routes, metric):
 
     assert metric("router_clients_known") == 2
     assert metric("router_client_info", **TV, type="lan", band="") is None
-    assert metric("router_client_online_seconds", **TV) is None
-    assert metric("router_client_online_seconds", **NOTE) == 28800
+    assert metric("router_client_online_seconds", mac=TV["mac"]) is None
+    assert metric("router_client_online_seconds", mac=NOTE["mac"]) == 28800
 
 
 def test_collect_clients_sem_statistics(router_routes, metric):
@@ -138,7 +168,7 @@ def test_collect_clients_sem_statistics(router_routes, metric):
     exporter.collect_clients(FakeRouter(router_routes))
 
     novo = {"mac": "02:00:00:00:00:09", "name": "novo", "ip": "192.168.31.109"}
-    assert metric("router_client_download_bytes_per_second", **novo) == 0
+    assert metric("router_client_download_bytes_per_second", mac=novo["mac"]) == 0
     assert metric("router_client_info", **novo, type="", band="") == 1
 
 

@@ -166,7 +166,7 @@
    },
    "targets": [
     {
-     "expr": "router_client_download_bytes_per_second and on(mac) topk(10, avg_over_time(router_client_download_bytes_per_second[$__range] @ end()))",
+     "expr": "(max by (mac) (router_client_download_bytes_per_second) and on(mac) topk(10, max by (mac) (avg_over_time(router_client_download_bytes_per_second[$__range] @ end())))) * on(mac) group_left(name, ip) group by (mac, name, ip) (router_client_info @ end()) or on(mac) (max by (mac) (router_client_download_bytes_per_second) and on(mac) topk(10, max by (mac) (avg_over_time(router_client_download_bytes_per_second[$__range] @ end())))) * on(mac) group_left(name, ip) group by (mac, name, ip) (topk by (mac) (1, last_over_time(router_client_info[$__range] @ end()))) or on(mac) label_replace(max by (mac) (router_client_download_bytes_per_second) and on(mac) topk(10, max by (mac) (avg_over_time(router_client_download_bytes_per_second[$__range] @ end()))), \"name\", \"$1\", \"mac\", \"(.+)\")",
      "legendFormat": "{{name}} ({{ip}})",
      "refId": "A"
     }
@@ -211,7 +211,7 @@
    },
    "targets": [
     {
-     "expr": "router_client_upload_bytes_per_second and on(mac) topk(10, avg_over_time(router_client_upload_bytes_per_second[$__range] @ end()))",
+     "expr": "(max by (mac) (router_client_upload_bytes_per_second) and on(mac) topk(10, max by (mac) (avg_over_time(router_client_upload_bytes_per_second[$__range] @ end())))) * on(mac) group_left(name, ip) group by (mac, name, ip) (router_client_info @ end()) or on(mac) (max by (mac) (router_client_upload_bytes_per_second) and on(mac) topk(10, max by (mac) (avg_over_time(router_client_upload_bytes_per_second[$__range] @ end())))) * on(mac) group_left(name, ip) group by (mac, name, ip) (topk by (mac) (1, last_over_time(router_client_info[$__range] @ end()))) or on(mac) label_replace(max by (mac) (router_client_upload_bytes_per_second) and on(mac) topk(10, max by (mac) (avg_over_time(router_client_upload_bytes_per_second[$__range] @ end()))), \"name\", \"$1\", \"mac\", \"(.+)\")",
      "legendFormat": "{{name}} ({{ip}})",
      "refId": "A"
     }
@@ -257,7 +257,7 @@
    },
    "targets": [
     {
-     "expr": "sort_desc(topk(10, router_client_download_bytes))",
+     "expr": "sort_desc(topk(10, (max by (mac) (router_client_download_bytes)) * on(mac) group_left(name, ip) group by (mac, name, ip) (router_client_info @ end()) or on(mac) (max by (mac) (router_client_download_bytes)) * on(mac) group_left(name, ip) group by (mac, name, ip) (topk by (mac) (1, last_over_time(router_client_info[$__range] @ end()))) or on(mac) label_replace(max by (mac) (router_client_download_bytes), \"name\", \"$1\", \"mac\", \"(.+)\")))",
      "instant": true,
      "legendFormat": "{{name}} ({{ip}})",
      "refId": "A"
@@ -319,7 +319,7 @@
    },
    "targets": [
     {
-     "expr": "sort_desc(topk(10, router_client_upload_bytes))",
+     "expr": "sort_desc(topk(10, (max by (mac) (router_client_upload_bytes)) * on(mac) group_left(name, ip) group by (mac, name, ip) (router_client_info @ end()) or on(mac) (max by (mac) (router_client_upload_bytes)) * on(mac) group_left(name, ip) group by (mac, name, ip) (topk by (mac) (1, last_over_time(router_client_info[$__range] @ end()))) or on(mac) label_replace(max by (mac) (router_client_upload_bytes), \"name\", \"$1\", \"mac\", \"(.+)\")))",
      "instant": true,
      "legendFormat": "{{name}} ({{ip}})",
      "refId": "A"
@@ -386,31 +386,31 @@
      "refId": "A"
     },
     {
-     "expr": "router_client_download_bytes_per_second",
+     "expr": "max by (mac) (router_client_download_bytes_per_second)",
      "format": "table",
      "instant": true,
      "refId": "B"
     },
     {
-     "expr": "router_client_upload_bytes_per_second",
+     "expr": "max by (mac) (router_client_upload_bytes_per_second)",
      "format": "table",
      "instant": true,
      "refId": "C"
     },
     {
-     "expr": "router_client_download_bytes",
+     "expr": "max by (mac) (router_client_download_bytes)",
      "format": "table",
      "instant": true,
      "refId": "D"
     },
     {
-     "expr": "router_client_upload_bytes",
+     "expr": "max by (mac) (router_client_upload_bytes)",
      "format": "table",
      "instant": true,
      "refId": "E"
     },
     {
-     "expr": "router_client_online_seconds",
+     "expr": "max by (mac) (router_client_online_seconds)",
      "format": "table",
      "instant": true,
      "refId": "F"
@@ -478,7 +478,9 @@
        "ip 1": "IP",
        "type": "Tipo",
        "band": "R\u00e1dio",
-       "mac": "MAC"
+       "mac": "MAC",
+       "name": "Nome",
+       "ip": "IP"
       }
      }
     }
