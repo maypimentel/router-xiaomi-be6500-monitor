@@ -1,5 +1,10 @@
 # Monitor WAN/LAN – Xiaomi BE6500
 
+<p align="center">
+  <img src="https://cdn.cnbj1.fds.api.mi-img.com/product-images/xiaomi-routers/be-6500b8474/062.jpg" alt="Roteador Xiaomi BE6500" width="600">
+  <br><sub>Imagem: <a href="https://www.mi.com/xiaomi-routers/be-6500/">Xiaomi</a> (página oficial do produto)</sub>
+</p>
+
 Exporter Python que faz login na interface web do roteador (`192.168.31.1`), coleta o status do multiwan/WANs e dos clientes da LAN e expõe em formato Prometheus. A stack (exporter + Prometheus + Grafana) sobe via Docker Compose.
 
 ## Uso
