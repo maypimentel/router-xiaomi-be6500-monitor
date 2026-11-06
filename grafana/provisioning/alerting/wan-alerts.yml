@@ -9,7 +9,7 @@
    "rules": [
     {
      "uid": "wan1-down",
-     "title": "WAN1 caiu",
+     "title": "WAN1 down",
      "condition": "C",
      "for": "1m",
      "noDataState": "Alerting",
@@ -18,7 +18,7 @@
       "severity": "critical"
      },
      "annotations": {
-      "summary": "WAN1 est\u00e1 desconectada (status != 2) h\u00e1 mais de 1 minuto"
+      "summary": "WAN1 has been disconnected (status != 2) for more than 1 minute"
      },
      "data": [
       {
@@ -75,7 +75,7 @@
     },
     {
      "uid": "wan2-down",
-     "title": "WAN2 caiu (multiwan ativo)",
+     "title": "WAN2 down (multiwan enabled)",
      "condition": "C",
      "for": "1m",
      "noDataState": "Alerting",
@@ -84,7 +84,7 @@
       "severity": "critical"
      },
      "annotations": {
-      "summary": "WAN2 est\u00e1 desconectada com o multiwan habilitado"
+      "summary": "WAN2 is disconnected while multiwan is enabled"
      },
      "data": [
       {
@@ -141,7 +141,7 @@
     },
     {
      "uid": "router-unreachable",
-     "title": "Roteador sem resposta",
+     "title": "Router not responding",
      "condition": "C",
      "for": "2m",
      "noDataState": "Alerting",
@@ -150,7 +150,7 @@
       "severity": "critical"
      },
      "annotations": {
-      "summary": "O exporter n\u00e3o consegue coletar dados do roteador"
+      "summary": "The exporter cannot collect data from the router"
      },
      "data": [
       {

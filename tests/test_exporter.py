@@ -5,7 +5,7 @@ from monitor import exporter
 from .conftest import FakeRouter, load
 
 MACBIND = "api/xqnetwork/macbind_info"
-NOTE = {"mac": "02:00:00:00:00:01", "name": "notebook-sala", "ip": "192.168.31.101"}
+NOTE = {"mac": "02:00:00:00:00:01", "name": "living-room-laptop", "ip": "192.168.31.101"}
 ESP = {"mac": "02:00:00:00:00:02", "name": "sensor-esp", "ip": "192.168.31.102"}
 TV = {"mac": "02:00:00:00:00:03", "name": "tv", "ip": "192.168.31.103"}
 
@@ -26,7 +26,7 @@ def test_collect_multiwan(fake_router, metric):
     assert metric("router_wan_ipv6_up") == 1
 
 
-def test_collect_wan_conectada(fake_router, metric):
+def test_collect_wan_connected(fake_router, metric):
     exporter.collect(fake_router)
 
     assert metric("router_wan_up", wan="WAN1") == 1
@@ -39,12 +39,12 @@ def test_collect_wan_conectada(fake_router, metric):
     ) == 1
 
 
-def test_collect_wan_desconectada(fake_router, metric):
+def test_collect_wan_disconnected(fake_router, metric):
     exporter.collect(fake_router)
 
     assert metric("router_wan_up", wan="WAN2") == 0
     assert metric("router_wan_status_code", wan="WAN2") == 3
-    assert metric("router_wan_link_speed_mbps", wan="WAN2") == 0  # wanSpeed vazio
+    assert metric("router_wan_link_speed_mbps", wan="WAN2") == 0  # empty wanSpeed
     assert metric("router_wan_error_code", wan="WAN2") == 678
     assert metric(
         "router_wan_info", wan="WAN2", proto="pppoe", ip="", gateway="", dns="",
@@ -52,7 +52,7 @@ def test_collect_wan_desconectada(fake_router, metric):
     ) == 1
 
 
-def test_collect_tolera_campos_ausentes(router_routes, metric):
+def test_collect_tolerates_missing_fields(router_routes, metric):
     router_routes["api/misystem/get_ps_service?service=multiwan"] = {"code": 0}
     router_routes["api/xqnetwork/get_wan_status"] = {"code": 0}
     router_routes["api/xqnetwork/pppoe_status?wan_name=WAN1"] = {"code": 0}
@@ -65,7 +65,7 @@ def test_collect_tolera_campos_ausentes(router_routes, metric):
     assert metric("router_wan_info", wan="WAN1", proto="", ip="", gateway="", dns="", message="") == 1
 
 
-def test_collect_remove_wan_info_antigo(router_routes, metric):
+def test_collect_removes_old_wan_info(router_routes, metric):
     exporter.collect(FakeRouter(router_routes))
     old_ip = {"wan": "WAN1", "proto": "dhcp", "ip": "192.0.2.10", "gateway": "192.0.2.1",
               "dns": "192.0.2.53,192.0.2.54", "message": ""}
@@ -80,9 +80,9 @@ def test_collect_remove_wan_info_antigo(router_routes, metric):
     assert metric("router_wan_info", **{**old_ip, "ip": "192.0.2.20"}) == 1
 
 
-# --- clientes (LAN) ----------------------------------------------------------
+# --- clients (LAN) -----------------------------------------------------------
 
-def test_collect_clients_totais(fake_router, metric):
+def test_collect_clients_totals(fake_router, metric):
     exporter.collect_clients(fake_router)
 
     assert fake_router.calls == [MACBIND]
@@ -90,7 +90,7 @@ def test_collect_clients_totais(fake_router, metric):
     assert metric("router_clients_online") == 2
 
 
-def test_collect_clients_estatisticas(fake_router, metric):
+def test_collect_clients_statistics(fake_router, metric):
     exporter.collect_clients(fake_router)
 
     mac = NOTE["mac"]
@@ -101,7 +101,7 @@ def test_collect_clients_estatisticas(fake_router, metric):
     assert metric("router_client_online_seconds", mac=mac) == 28800
 
 
-def test_collect_clients_metricas_identificadas_so_pelo_mac(fake_router):
+def test_collect_clients_metrics_identified_by_mac_only(fake_router):
     exporter.collect_clients(fake_router)
 
     for gauge in (exporter.cl_up_speed, exporter.cl_down_speed, exporter.cl_up_total,
@@ -118,34 +118,34 @@ def test_collect_clients_info(fake_router, metric):
     assert metric("router_client_info", **TV, type="lan", band="") == 0  # offline
 
 
-def test_collect_clients_usa_hostname_sem_nome(fake_router, metric):
+def test_collect_clients_uses_hostname_without_name(fake_router, metric):
     exporter.collect_clients(fake_router)
 
-    # "name" vazio na fixture -> cai para o hostname
+    # empty "name" in the fixture -> falls back to hostname
     assert metric("router_client_info", **ESP, type="wifi", band="wl1") == 1
 
 
-def test_collect_clients_renomear_mantem_a_serie(router_routes, metric):
+def test_collect_clients_rename_keeps_series(router_routes, metric):
     exporter.collect_clients(FakeRouter(router_routes))
 
     data = load("macbind_info.json")
     note = next(d for d in data["devicelist"] if d["mac"] == NOTE["mac"])
-    note["name"] = "notebook-escritorio"
+    note["name"] = "office-laptop"
     note["ip"] = note["statistics"]["ip"] = "192.168.31.150"
     router_routes[MACBIND] = data
     exporter.collect_clients(FakeRouter(router_routes))
 
-    # a métrica continua na mesma série (só o MAC identifica)...
+    # the metric stays in the same series (only the MAC identifies it)...
     assert metric("router_client_download_bytes", mac=NOTE["mac"]) == 2147483648
-    # ...e só o info muda de nome/IP
+    # ...and only the info metric changes name/IP
     assert metric("router_client_info", **NOTE, type="wifi", band="wl0") is None
     assert metric(
-        "router_client_info", mac=NOTE["mac"], name="notebook-escritorio",
+        "router_client_info", mac=NOTE["mac"], name="office-laptop",
         ip="192.168.31.150", type="wifi", band="wl0",
     ) == 1
 
 
-def test_collect_clients_remove_quem_saiu_da_lista(router_routes, metric):
+def test_collect_clients_removes_clients_that_left(router_routes, metric):
     exporter.collect_clients(FakeRouter(router_routes))
     assert metric("router_client_info", **TV, type="lan", band="") == 0
 
@@ -160,19 +160,19 @@ def test_collect_clients_remove_quem_saiu_da_lista(router_routes, metric):
     assert metric("router_client_online_seconds", mac=NOTE["mac"]) == 28800
 
 
-def test_collect_clients_sem_statistics(router_routes, metric):
+def test_collect_clients_without_statistics(router_routes, metric):
     data = load("macbind_info.json")
-    data["devicelist"] = [{"mac": "02:00:00:00:00:09", "ip": "192.168.31.109", "hostname": "novo", "online": 1}]
+    data["devicelist"] = [{"mac": "02:00:00:00:00:09", "ip": "192.168.31.109", "hostname": "new-device", "online": 1}]
     router_routes[MACBIND] = data
 
     exporter.collect_clients(FakeRouter(router_routes))
 
-    novo = {"mac": "02:00:00:00:00:09", "name": "novo", "ip": "192.168.31.109"}
-    assert metric("router_client_download_bytes_per_second", mac=novo["mac"]) == 0
-    assert metric("router_client_info", **novo, type="", band="") == 1
+    new = {"mac": "02:00:00:00:00:09", "name": "new-device", "ip": "192.168.31.109"}
+    assert metric("router_client_download_bytes_per_second", mac=new["mac"]) == 0
+    assert metric("router_client_info", **new, type="", band="") == 1
 
 
-def test_collect_clients_lista_vazia(router_routes, metric):
+def test_collect_clients_empty_list(router_routes, metric):
     router_routes[MACBIND] = {"code": 0}
 
     exporter.collect_clients(FakeRouter(router_routes))
@@ -189,16 +189,16 @@ class StopLoop(Exception):
 
 @pytest.fixture
 def run_main(monkeypatch):
-    """Executa uma iteração de exporter.main() com cliente e servidor falsos."""
+    """Runs one iteration of exporter.main() with a fake client and server."""
 
     def _run(collect_side_effect=None):
-        monkeypatch.setenv("ROUTER_PASSWORD", "senha-ficticia")
+        monkeypatch.setenv("ROUTER_PASSWORD", "fake-password")
         monkeypatch.setattr(exporter, "start_http_server", lambda port: None)
         instances = []
 
         class Client:
             def __init__(self, host, password):
-                self.token = "algum-token"
+                self.token = "some-token"
                 instances.append(self)
 
         monkeypatch.setattr(exporter, "MiWifiClient", Client)
@@ -216,16 +216,16 @@ def run_main(monkeypatch):
     return _run
 
 
-def test_main_marca_coleta_ok(run_main, metric):
+def test_main_marks_collection_ok(run_main, metric):
     run_main()
 
     assert metric("router_scrape_success") == 1
     assert metric("router_scrape_duration_seconds") >= 0
 
 
-def test_main_marca_falha_e_descarta_token(run_main, metric):
+def test_main_marks_failure_and_drops_token(run_main, metric):
     def boom(c):
-        raise RuntimeError("roteador fora do ar")
+        raise RuntimeError("router is down")
 
     client = run_main(boom)
 

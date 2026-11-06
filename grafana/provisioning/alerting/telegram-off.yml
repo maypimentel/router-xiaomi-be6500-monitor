@@ -1,6 +1,6 @@
-# Telegram desativado: remove o contact point e restaura a política padrão.
-# Para reativar: apague este arquivo e renomeie telegram.yml.disabled -> telegram.yml
-# (veja o README).
+# Telegram disabled: removes the contact point and restores the default policy.
+# To enable it: delete this file and rename telegram.yml.disabled -> telegram.yml
+# (see the README).
 apiVersion: 1
 resetPolicies:
   - 1

@@ -1,4 +1,4 @@
-"""Fixtures compartilhadas. Todos os dados em tests/fixtures são fictícios."""
+"""Shared fixtures. All data in tests/fixtures is fictitious."""
 import json
 from pathlib import Path
 
@@ -14,7 +14,7 @@ def load(name: str) -> dict:
 
 
 class FakeResponse:
-    """Resposta mínima compatível com o uso de requests.Response no projeto."""
+    """Minimal response compatible with how the project uses requests.Response."""
 
     def __init__(self, payload=None, status_code: int = 200, text: str | None = None):
         self._payload = payload
@@ -32,7 +32,7 @@ class FakeResponse:
 
 
 class FakeSession:
-    """Substitui requests.Session: devolve respostas enfileiradas e registra as chamadas."""
+    """Replaces requests.Session: returns queued responses and records the calls."""
 
     def __init__(self):
         self.posts: list[tuple[str, dict]] = []
@@ -50,7 +50,7 @@ class FakeSession:
 
 
 class FakeRouter:
-    """Cliente falso para o exporter: mapeia path da API -> fixture."""
+    """Fake client for the exporter: maps API path -> fixture."""
 
     def __init__(self, routes: dict[str, dict]):
         self.routes = routes
@@ -84,9 +84,9 @@ def fake_router(router_routes):
 
 @pytest.fixture
 def metric():
-    """Lê o valor atual de uma métrica do registry global do prometheus_client."""
+    """Reads the current value of a metric from the global prometheus_client registry."""
 
-    # Posicional-only: os clientes têm um label chamado "name".
+    # Positional-only: client metrics have a label called "name".
     def _get(metric_name: str, /, **labels):
         return REGISTRY.get_sample_value(metric_name, labels or None)
 

@@ -9,7 +9,7 @@
    "rules": [
     {
      "uid": "new-client",
-     "title": "Novo dispositivo na rede",
+     "title": "New device on the network",
      "condition": "C",
      "for": "0s",
      "noDataState": "OK",
@@ -18,7 +18,7 @@
       "severity": "warning"
      },
      "annotations": {
-      "summary": "Novo dispositivo: {{ $labels.name }} ({{ $labels.ip }}, {{ $labels.mac }})"
+      "summary": "New device: {{ $labels.name }} ({{ $labels.ip }}, {{ $labels.mac }})"
      },
      "data": [
       {

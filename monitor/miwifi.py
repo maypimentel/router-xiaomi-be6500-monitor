@@ -1,4 +1,4 @@
-"""Cliente mínimo para a interface web de roteadores Xiaomi (MiWiFi)."""
+"""Minimal client for the web interface of Xiaomi (MiWiFi) routers."""
 import hashlib
 import random
 import re
@@ -6,7 +6,7 @@ import time
 
 import requests
 
-# Constantes extraídas do JS da página de login (/cgi-bin/luci/web).
+# Constants taken from the login page JS (/cgi-bin/luci/web).
 KEY = "a2ffa5c9be07488bbb04a3a47d3c5f6a"
 DEVICE_ID = "00:d7:6d:1b:1c:e1"
 
@@ -34,12 +34,12 @@ class MiWifiClient:
         r.raise_for_status()
         data = r.json()
         if data.get("code") != 0:
-            raise RuntimeError(f"Login falhou: {data}")
+            raise RuntimeError(f"Login failed: {data}")
         self.token = data["token"]
         return self.token
 
     def get(self, path: str):
-        """GET autenticado em /cgi-bin/luci/;stok=<token>/<path>. Relogin se a sessão expirar."""
+        """Authenticated GET on /cgi-bin/luci/;stok=<token>/<path>. Logs in again if the session expired."""
         for attempt in (1, 2):
             if not self.token:
                 self.login()
@@ -51,13 +51,13 @@ class MiWifiClient:
                 self.token = None
                 if attempt == 1:
                     continue
-                raise RuntimeError(f"Sessão recusada pelo roteador em {path}")
+                raise RuntimeError(f"Session rejected by the router on {path}")
             r.raise_for_status()
             return r
 
     @staticmethod
     def _invalid_token(r: requests.Response) -> bool:
-        # Token expirado vem como HTTP 200 com {"code":401,"msg":"Invalid token"}.
+        # An expired token comes back as HTTP 200 with {"code":401,"msg":"Invalid token"}.
         try:
             return r.json().get("code") == 401
         except ValueError:

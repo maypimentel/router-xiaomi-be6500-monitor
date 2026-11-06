@@ -1,4 +1,4 @@
-"""Exporter Prometheus para os links WAN do Xiaomi BE6500."""
+"""Prometheus exporter for the Xiaomi BE6500 WAN links and LAN clients."""
 import logging
 import os
 import time
@@ -9,36 +9,36 @@ from .miwifi import MiWifiClient
 
 log = logging.getLogger("exporter")
 
-# Significado de `status` em pppoe_status (do JS do roteador).
-# 1=discando, 2=conectado, 3=falha (tentando modo especial), 4=desconectado.
+# Meaning of `status` in pppoe_status (from the router's JS).
+# 1=dialing, 2=connected, 3=failed (trying special mode), 4=disconnected.
 L = ["wan"]
-up = Gauge("router_scrape_success", "1 se a última coleta no roteador funcionou")
-scrape_duration = Gauge("router_scrape_duration_seconds", "Duração da última coleta")
-mw_enabled = Gauge("router_multiwan_enabled", "1 se multiwan está habilitado")
-mw_mode = Gauge("router_multiwan_policy_mode", "Modo da política (0=balanceamento, 1/2=failover, 3=só WAN1, 4=só WAN2)")
-mw_current = Gauge("router_multiwan_current_wan", "1 para a WAN atualmente ativa", L)
-mw_weight = Gauge("router_multiwan_weight", "Peso no balanceamento", L)
-mw_bw = Gauge("router_multiwan_bandwidth", "Banda configurada para a WAN", L)
-wan_up = Gauge("router_wan_up", "1 se a WAN está conectada (status==2)", L)
-wan_status = Gauge("router_wan_status_code", "Código de status bruto (1=discando,2=ok,3=falha,4=desconectado)", L)
-wan_speed = Gauge("router_wan_link_speed_mbps", "Velocidade negociada da porta", L)
-wan_err = Gauge("router_wan_error_code", "Código de erro (ex.: 678 PPPoE sem resposta)", L)
-wan_info = Gauge("router_wan_info", "Informações da WAN como labels (valor sempre 1)", ["wan", "proto", "ip", "gateway", "dns", "message"])
-ipv6_up = Gauge("router_wan_ipv6_up", "1 se o IPv6 da WAN principal está ativo")
+up = Gauge("router_scrape_success", "1 if the last collection from the router succeeded")
+scrape_duration = Gauge("router_scrape_duration_seconds", "Duration of the last collection")
+mw_enabled = Gauge("router_multiwan_enabled", "1 if multiwan is enabled")
+mw_mode = Gauge("router_multiwan_policy_mode", "Policy mode (0=load balancing, 1/2=failover, 3=WAN1 only, 4=WAN2 only)")
+mw_current = Gauge("router_multiwan_current_wan", "1 for the currently active WAN", L)
+mw_weight = Gauge("router_multiwan_weight", "Load balancing weight", L)
+mw_bw = Gauge("router_multiwan_bandwidth", "Bandwidth configured for the WAN", L)
+wan_up = Gauge("router_wan_up", "1 if the WAN is connected (status==2)", L)
+wan_status = Gauge("router_wan_status_code", "Raw status code (1=dialing,2=ok,3=failed,4=disconnected)", L)
+wan_speed = Gauge("router_wan_link_speed_mbps", "Negotiated port speed", L)
+wan_err = Gauge("router_wan_error_code", "Error code (e.g. 678 no PPPoE response)", L)
+wan_info = Gauge("router_wan_info", "WAN information as labels (value always 1)", ["wan", "proto", "ip", "gateway", "dns", "message"])
+ipv6_up = Gauge("router_wan_ipv6_up", "1 if IPv6 on the main WAN is up")
 
-# As métricas por cliente são identificadas só pelo MAC, para o histórico não
-# se partir quando o aparelho é renomeado ou troca de IP. Nome, IP, tipo e
-# rádio ficam em router_client_info; os dashboards fazem o join por `mac`.
+# Per-client metrics are identified by MAC only, so the history is not split
+# when a device is renamed or changes IP. Name, IP, type and radio live in
+# router_client_info; the dashboards join on `mac`.
 CL = ["mac"]
-clients_online = Gauge("router_clients_online", "Número de clientes online")
-clients_total = Gauge("router_clients_known", "Número de clientes na lista do roteador")
-cl_up_speed = Gauge("router_client_upload_bytes_per_second", "Velocidade de upload atual do cliente", CL)
-cl_down_speed = Gauge("router_client_download_bytes_per_second", "Velocidade de download atual do cliente", CL)
-cl_up_total = Gauge("router_client_upload_bytes", "Total enviado pelo cliente na sessão (bytes)", CL)
-cl_down_total = Gauge("router_client_download_bytes", "Total recebido pelo cliente na sessão (bytes)", CL)
-cl_online_s = Gauge("router_client_online_seconds", "Tempo conectado (s)", CL)
+clients_online = Gauge("router_clients_online", "Number of online clients")
+clients_total = Gauge("router_clients_known", "Number of clients in the router's list")
+cl_up_speed = Gauge("router_client_upload_bytes_per_second", "Current client upload speed", CL)
+cl_down_speed = Gauge("router_client_download_bytes_per_second", "Current client download speed", CL)
+cl_up_total = Gauge("router_client_upload_bytes", "Total uploaded by the client in the session (bytes)", CL)
+cl_down_total = Gauge("router_client_download_bytes", "Total downloaded by the client in the session (bytes)", CL)
+cl_online_s = Gauge("router_client_online_seconds", "Time connected (s)", CL)
 cl_info = Gauge(
-    "router_client_info", "Nome, IP, tipo e rádio do cliente como labels (valor 1 se online)",
+    "router_client_info", "Client name, IP, type and radio as labels (value 1 if online)",
     ["mac", "name", "ip", "type", "band"],
 )
 
@@ -77,7 +77,7 @@ def collect(c: MiWifiClient) -> None:
 def collect_clients(c: MiWifiClient) -> None:
     devs = c.get("api/xqnetwork/macbind_info").json().get("devicelist", [])
     for g in (cl_up_speed, cl_down_speed, cl_up_total, cl_down_total, cl_online_s, cl_info):
-        g.clear()  # evita séries de clientes que saíram da lista
+        g.clear()  # drop series of clients that left the list
     clients_total.set(len(devs))
     clients_online.set(sum(1 for d in devs if d.get("online")))
     for d in devs:
@@ -103,7 +103,7 @@ def main() -> None:
     port = int(os.environ.get("EXPORTER_PORT", "9877"))
     client = MiWifiClient(host, password)
     start_http_server(port)
-    log.info("exporter na porta %s, roteador %s, intervalo %ss", port, host, interval)
+    log.info("exporter on port %s, router %s, interval %ss", port, host, interval)
     while True:
         t0 = time.time()
         try:
@@ -111,7 +111,7 @@ def main() -> None:
             collect_clients(client)
             up.set(1)
         except Exception as e:  # noqa: BLE001
-            log.error("coleta falhou: %s", e)
+            log.error("collection failed: %s", e)
             client.token = None
             up.set(0)
         scrape_duration.set(time.time() - t0)

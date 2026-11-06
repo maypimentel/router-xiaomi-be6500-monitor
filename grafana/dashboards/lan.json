@@ -1,6 +1,6 @@
 {
  "uid": "xiaomi-lan",
- "title": "Xiaomi BE6500 - LAN (clientes)",
+ "title": "Xiaomi BE6500 - LAN (clients)",
  "schemaVersion": 39,
  "refresh": "15s",
  "time": {
@@ -11,7 +11,7 @@
   {
    "id": 11,
    "type": "stat",
-   "title": "Clientes online",
+   "title": "Online clients",
    "datasource": {
     "type": "prometheus",
     "uid": "prometheus"
@@ -46,7 +46,7 @@
   {
    "id": 12,
    "type": "stat",
-   "title": "Clientes conhecidos",
+   "title": "Known clients",
    "datasource": {
     "type": "prometheus",
     "uid": "prometheus"
@@ -81,7 +81,7 @@
   {
    "id": 13,
    "type": "stat",
-   "title": "Download total (clientes)",
+   "title": "Total download (clients)",
    "datasource": {
     "type": "prometheus",
     "uid": "prometheus"
@@ -117,7 +117,7 @@
   {
    "id": 14,
    "type": "stat",
-   "title": "Upload total (clientes)",
+   "title": "Total upload (clients)",
    "datasource": {
     "type": "prometheus",
     "uid": "prometheus"
@@ -153,7 +153,7 @@
   {
    "id": 15,
    "type": "timeseries",
-   "title": "Download por cliente (top 10)",
+   "title": "Download per client (top 10)",
    "datasource": {
     "type": "prometheus",
     "uid": "prometheus"
@@ -198,7 +198,7 @@
   {
    "id": 17,
    "type": "timeseries",
-   "title": "Upload por cliente (top 10)",
+   "title": "Upload per client (top 10)",
    "datasource": {
     "type": "prometheus",
     "uid": "prometheus"
@@ -243,12 +243,12 @@
   {
    "id": 18,
    "type": "bargauge",
-   "title": "Ranking: 10 maiores downloads",
+   "title": "Ranking: top 10 downloads",
    "datasource": {
     "type": "prometheus",
     "uid": "prometheus"
    },
-   "description": "Volume trafegado desde que o dispositivo conectou (zera quando ele reconecta).",
+   "description": "Volume transferred since the device connected (resets when it reconnects).",
    "gridPos": {
     "x": 0,
     "y": 13,
@@ -305,12 +305,12 @@
   {
    "id": 19,
    "type": "bargauge",
-   "title": "Ranking: 10 maiores uploads",
+   "title": "Ranking: top 10 uploads",
    "datasource": {
     "type": "prometheus",
     "uid": "prometheus"
    },
-   "description": "Volume trafegado desde que o dispositivo conectou (zera quando ele reconecta).",
+   "description": "Volume transferred since the device connected (resets when it reconnects).",
    "gridPos": {
     "x": 12,
     "y": 13,
@@ -367,7 +367,7 @@
   {
    "id": 16,
    "type": "table",
-   "title": "Clientes",
+   "title": "Clients",
    "datasource": {
     "type": "prometheus",
     "uid": "prometheus"
@@ -471,15 +471,15 @@
        "Value #A": "Online",
        "Value #B": "Download",
        "Value #C": "Upload",
-       "Value #D": "Total baixado",
-       "Value #E": "Total enviado",
-       "Value #F": "Conectado h\u00e1",
-       "name 1": "Nome",
+       "Value #D": "Total downloaded",
+       "Value #E": "Total uploaded",
+       "Value #F": "Connected for",
+       "name 1": "Name",
        "ip 1": "IP",
-       "type": "Tipo",
-       "band": "R\u00e1dio",
+       "type": "Type",
+       "band": "Radio",
        "mac": "MAC",
-       "name": "Nome",
+       "name": "Name",
        "ip": "IP"
       }
      }
@@ -515,7 +515,7 @@
      {
       "matcher": {
        "id": "byName",
-       "options": "Total baixado"
+       "options": "Total downloaded"
       },
       "properties": [
        {
@@ -527,7 +527,7 @@
      {
       "matcher": {
        "id": "byName",
-       "options": "Total enviado"
+       "options": "Total uploaded"
       },
       "properties": [
        {
@@ -539,7 +539,7 @@
      {
       "matcher": {
        "id": "byName",
-       "options": "Conectado h\u00e1"
+       "options": "Connected for"
       },
       "properties": [
        {

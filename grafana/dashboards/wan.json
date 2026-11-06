@@ -72,7 +72,7 @@
   {
    "id": 2,
    "type": "stat",
-   "title": "WAN ativa (multiwan)",
+   "title": "Active WAN (multiwan)",
    "datasource": {
     "type": "prometheus",
     "uid": "prometheus"
@@ -133,7 +133,7 @@
   {
    "id": 3,
    "type": "stat",
-   "title": "Multiwan habilitado",
+   "title": "Multiwan enabled",
    "datasource": {
     "type": "prometheus",
     "uid": "prometheus"
@@ -158,10 +158,10 @@
        "type": "value",
        "options": {
         "0": {
-         "text": "N\u00c3O"
+         "text": "NO"
         },
         "1": {
-         "text": "SIM"
+         "text": "YES"
         }
        }
       }
@@ -194,7 +194,7 @@
   {
    "id": 4,
    "type": "stat",
-   "title": "Coleta no roteador",
+   "title": "Router scrape",
    "datasource": {
     "type": "prometheus",
     "uid": "prometheus"
@@ -219,7 +219,7 @@
        "type": "value",
        "options": {
         "0": {
-         "text": "FALHA"
+         "text": "FAILED"
         },
         "1": {
          "text": "OK"
@@ -255,7 +255,7 @@
   {
    "id": 5,
    "type": "stat",
-   "title": "Modo da pol\u00edtica",
+   "title": "Policy mode",
    "datasource": {
     "type": "prometheus",
     "uid": "prometheus"
@@ -269,7 +269,7 @@
    "targets": [
     {
      "expr": "router_multiwan_policy_mode",
-     "legendFormat": "modo",
+     "legendFormat": "mode",
      "refId": "A"
     }
    ],
@@ -280,7 +280,7 @@
        "type": "value",
        "options": {
         "0": {
-         "text": "Balanceamento"
+         "text": "Load balancing"
         },
         "1": {
          "text": "Failover"
@@ -289,10 +289,10 @@
          "text": "Failover"
         },
         "3": {
-         "text": "S\u00f3 WAN1"
+         "text": "WAN1 only"
         },
         "4": {
-         "text": "S\u00f3 WAN2"
+         "text": "WAN2 only"
         }
        }
       }
@@ -325,7 +325,7 @@
   {
    "id": 6,
    "type": "timeseries",
-   "title": "Estado das WANs (1=UP)",
+   "title": "WAN state (1=UP)",
    "datasource": {
     "type": "prometheus",
     "uid": "prometheus"
@@ -355,7 +355,7 @@
   {
    "id": 7,
    "type": "timeseries",
-   "title": "C\u00f3digo de status bruto",
+   "title": "Raw status code",
    "datasource": {
     "type": "prometheus",
     "uid": "prometheus"
@@ -385,7 +385,7 @@
   {
    "id": 8,
    "type": "timeseries",
-   "title": "Velocidade do link (Mbps)",
+   "title": "Link speed (Mbps)",
    "datasource": {
     "type": "prometheus",
     "uid": "prometheus"
@@ -415,7 +415,7 @@
   {
    "id": 9,
    "type": "timeseries",
-   "title": "C\u00f3digo de erro",
+   "title": "Error code",
    "datasource": {
     "type": "prometheus",
     "uid": "prometheus"
@@ -445,7 +445,7 @@
   {
    "id": 10,
    "type": "table",
-   "title": "Detalhes das WANs",
+   "title": "WAN details",
    "datasource": {
     "type": "prometheus",
     "uid": "prometheus"
