@@ -1,5 +1,7 @@
 # Monitor WAN/LAN – Xiaomi BE6500
 
+[![Testes](https://github.com/maypimentel/router-xiaomi-be6500-monitor/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/maypimentel/router-xiaomi-be6500-monitor/actions/workflows/tests.yml?query=branch%3Amain)
+
 <p align="center">
   <img src="https://cdn.cnbj1.fds.api.mi-img.com/product-images/xiaomi-routers/be-6500b8474/062.jpg" alt="Roteador Xiaomi BE6500" width="600">
   <br><sub>Imagem: <a href="https://www.mi.com/xiaomi-routers/be-6500/">Xiaomi</a> (página oficial do produto)</sub>
