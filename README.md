@@ -1,6 +1,6 @@
-# Monitor WAN – Xiaomi BE6500
+# Monitor WAN/LAN – Xiaomi BE6500
 
-Exporter Python que faz login na interface web do roteador (`192.168.31.1`), coleta o status do multiwan/WANs e expõe em formato Prometheus. A stack (exporter + Prometheus + Grafana) sobe via Docker Compose.
+Exporter Python que faz login na interface web do roteador (`192.168.31.1`), coleta o status do multiwan/WANs e dos clientes da LAN e expõe em formato Prometheus. A stack (exporter + Prometheus + Grafana) sobe via Docker Compose.
 
 ## Uso
 ```
@@ -19,6 +19,11 @@ Clientes da LAN (velocidade, consumo e tempo conectado) ficam no dashboard "Xiao
 - `api/misystem/get_ps_service?service=multiwan` – habilitado, política, WAN ativa, pesos
 - `api/xqnetwork/get_wan_status` – IPv4/IPv6 da WAN principal
 - `api/xqnetwork/pppoe_status?wan_name=WAN1|WAN2` – status/erro/velocidade de cada WAN
+- `api/xqnetwork/macbind_info` – clientes: online, IP, rádio, velocidade e consumo
+
+## Alertas
+- WAN (`wan-alerts.yml`): WAN1 caiu, WAN2 caiu (com multiwan ativo), roteador sem resposta.
+- LAN (`lan-alerts.yml`): novo dispositivo na rede (MAC não visto nos 7 dias anteriores). Só começa a avaliar após ~30 min de coleta.
 
 `tools/discover.py` lista as APIs que a página principal usa (útil se o firmware mudar).
 

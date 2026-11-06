@@ -47,8 +47,18 @@ class MiWifiClient:
                 f"{self.base}/cgi-bin/luci/;stok={self.token}/{path.lstrip('/')}",
                 timeout=self.timeout,
             )
-            if r.status_code in (401, 403) and attempt == 1:
+            if r.status_code in (401, 403) or self._invalid_token(r):
                 self.token = None
-                continue
+                if attempt == 1:
+                    continue
+                raise RuntimeError(f"Sessão recusada pelo roteador em {path}")
             r.raise_for_status()
             return r
+
+    @staticmethod
+    def _invalid_token(r: requests.Response) -> bool:
+        # Token expirado vem como HTTP 200 com {"code":401,"msg":"Invalid token"}.
+        try:
+            return r.json().get("code") == 401
+        except ValueError:
+            return False

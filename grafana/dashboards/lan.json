@@ -29,7 +29,17 @@
     }
    ],
    "fieldConfig": {
-    "defaults": {},
+    "defaults": {
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "green",
+        "value": null
+       }
+      ]
+     }
+    },
     "overrides": []
    }
   },
@@ -54,7 +64,17 @@
     }
    ],
    "fieldConfig": {
-    "defaults": {},
+    "defaults": {
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "green",
+        "value": null
+       }
+      ]
+     }
+    },
     "overrides": []
    }
   },
@@ -80,7 +100,16 @@
    ],
    "fieldConfig": {
     "defaults": {
-     "unit": "Bps"
+     "unit": "Bps",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "green",
+        "value": null
+       }
+      ]
+     }
     },
     "overrides": []
    }
@@ -107,7 +136,16 @@
    ],
    "fieldConfig": {
     "defaults": {
-     "unit": "Bps"
+     "unit": "Bps",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "green",
+        "value": null
+       }
+      ]
+     }
     },
     "overrides": []
    }
@@ -128,7 +166,7 @@
    },
    "targets": [
     {
-     "expr": "topk(10, router_client_download_bytes_per_second > 0)",
+     "expr": "router_client_download_bytes_per_second and on(mac) topk(10, avg_over_time(router_client_download_bytes_per_second[$__range] @ end()))",
      "legendFormat": "{{name}} ({{ip}})",
      "refId": "A"
     }
@@ -147,7 +185,9 @@
      "calcs": [
       "mean",
       "max"
-     ]
+     ],
+     "sortBy": "Mean",
+     "sortDesc": true
     },
     "tooltip": {
      "mode": "multi",
@@ -171,7 +211,7 @@
    },
    "targets": [
     {
-     "expr": "topk(10, router_client_upload_bytes_per_second > 0)",
+     "expr": "router_client_upload_bytes_per_second and on(mac) topk(10, avg_over_time(router_client_upload_bytes_per_second[$__range] @ end()))",
      "legendFormat": "{{name}} ({{ip}})",
      "refId": "A"
     }
@@ -190,7 +230,9 @@
      "calcs": [
       "mean",
       "max"
-     ]
+     ],
+     "sortBy": "Mean",
+     "sortDesc": true
     },
     "tooltip": {
      "mode": "multi",
