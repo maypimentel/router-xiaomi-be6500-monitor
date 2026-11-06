@@ -1,4 +1,4 @@
-"""Loga no roteador, baixa a página principal e lista as URLs de API/JSON que ela referencia."""
+"""Logs in to the router, downloads the home page and lists the API/JSON URLs it references."""
 import os
 import re
 import sys

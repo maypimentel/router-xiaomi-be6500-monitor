@@ -9,7 +9,7 @@ contactPoints:
           botToken: __TELEGRAM_BOT_TOKEN__
           chatid: "__TELEGRAM_CHAT_ID__"
           message: |
-            {{ if eq .Status "firing" }}🔴 ALERTA{{ else }}🟢 RESOLVIDO{{ end }}
+            {{ if eq .Status "firing" }}🔴 ALERT{{ else }}🟢 RESOLVED{{ end }}
             {{ range .Alerts }}{{ .Labels.alertname }}
             {{ .Annotations.summary }}
             {{ end }}

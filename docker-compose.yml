@@ -4,7 +4,7 @@ services:
     restart: unless-stopped
     environment:
       ROUTER_HOST: ${ROUTER_HOST:-192.168.31.1}
-      ROUTER_PASSWORD: ${ROUTER_PASSWORD:?defina ROUTER_PASSWORD no .env}
+      ROUTER_PASSWORD: ${ROUTER_PASSWORD:?set ROUTER_PASSWORD in .env}
       SCRAPE_INTERVAL: ${SCRAPE_INTERVAL:-15}
 
   prometheus:
@@ -23,15 +23,16 @@ services:
     restart: unless-stopped
     ports:
       - "${GRAFANA_PORT:-3000}:3000"
-    # O Grafana converte chat ids numéricos em número ao expandir variáveis, e o
-    # contact point exige string. Por isso os placeholders são substituídos aqui,
-    # antes de o Grafana ler o provisionamento.
+    # Grafana turns numeric chat ids into numbers when expanding variables, and the
+    # contact point requires a string. That is why the placeholders are replaced
+    # here, before Grafana reads the provisioning files.
     entrypoint:
       - sh
       - -c
       - |
-        # Recria a cópia a cada início: se /tmp/provisioning já existir (container
-        # reiniciado), o cp -r criaria uma subpasta e o Grafana leria arquivos antigos.
+        # Recreate the copy on every start: if /tmp/provisioning already exists
+        # (restarted container), cp -r would create a subfolder and Grafana would
+        # keep reading the old files.
         rm -rf /tmp/provisioning
         cp -r /provisioning-src /tmp/provisioning
         [ -f /tmp/provisioning/alerting/telegram.yml ] && sed -i "s|__TELEGRAM_BOT_TOKEN__|$$TELEGRAM_BOT_TOKEN|; s|__TELEGRAM_CHAT_ID__|$$TELEGRAM_CHAT_ID|" /tmp/provisioning/alerting/telegram.yml

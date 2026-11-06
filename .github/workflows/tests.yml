@@ -1,8 +1,8 @@
-name: Testes
+name: Tests
 
 on:
   pull_request:
-    # opened = abertura; synchronize = novos commits no PR; reopened = PR reaberto
+    # opened = PR opened; synchronize = new commits pushed to the PR; reopened = PR reopened
     types: [opened, synchronize, reopened]
   push:
     branches: [main]
@@ -10,7 +10,7 @@ on:
 permissions:
   contents: read
 
-# Em PR, um novo commit cancela a execução anterior; na main cada push roda até o fim.
+# On PRs a new commit cancels the previous run; on main every push runs to completion.
 concurrency:
   group: tests-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
@@ -24,14 +24,14 @@ jobs:
 
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.14"  # mesma versão da imagem do Dockerfile
+          python-version: "3.14"  # same version as the Dockerfile image
           cache: pip
           cache-dependency-path: |
             requirements.txt
             requirements-dev.txt
 
-      - name: Instalar dependências
+      - name: Install dependencies
         run: pip install -r requirements.txt -r requirements-dev.txt
 
-      - name: Rodar testes
+      - name: Run tests
         run: python -m pytest -v

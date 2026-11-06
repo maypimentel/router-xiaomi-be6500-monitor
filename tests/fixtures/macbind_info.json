@@ -8,9 +8,9 @@
    "parent": "",
    "ip": "192.168.31.101",
    "port": 1,
-   "hostname": "notebook-sala",
+   "hostname": "living-room-laptop",
    "mac": "02:00:00:00:00:01",
-   "origin_name": "notebook-sala",
+   "origin_name": "living-room-laptop",
    "ptype": 0,
    "online": 1,
    "authority": {
@@ -30,7 +30,7 @@
     "icon": ""
    },
    "push": 0,
-   "name": "notebook-sala",
+   "name": "living-room-laptop",
    "times": 0,
    "type": "wifi",
    "statistics": {
