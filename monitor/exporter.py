@@ -26,7 +26,10 @@ wan_err = Gauge("router_wan_error_code", "Código de erro (ex.: 678 PPPoE sem re
 wan_info = Gauge("router_wan_info", "Informações da WAN como labels (valor sempre 1)", ["wan", "proto", "ip", "gateway", "dns", "message"])
 ipv6_up = Gauge("router_wan_ipv6_up", "1 se o IPv6 da WAN principal está ativo")
 
-CL = ["mac", "name", "ip"]
+# As métricas por cliente são identificadas só pelo MAC, para o histórico não
+# se partir quando o aparelho é renomeado ou troca de IP. Nome, IP, tipo e
+# rádio ficam em router_client_info; os dashboards fazem o join por `mac`.
+CL = ["mac"]
 clients_online = Gauge("router_clients_online", "Número de clientes online")
 clients_total = Gauge("router_clients_known", "Número de clientes na lista do roteador")
 cl_up_speed = Gauge("router_client_upload_bytes_per_second", "Velocidade de upload atual do cliente", CL)
@@ -34,7 +37,10 @@ cl_down_speed = Gauge("router_client_download_bytes_per_second", "Velocidade de 
 cl_up_total = Gauge("router_client_upload_bytes", "Total enviado pelo cliente na sessão (bytes)", CL)
 cl_down_total = Gauge("router_client_download_bytes", "Total recebido pelo cliente na sessão (bytes)", CL)
 cl_online_s = Gauge("router_client_online_seconds", "Tempo conectado (s)", CL)
-cl_info = Gauge("router_client_info", "Cliente como labels (valor 1 se online)", CL + ["type", "band"])
+cl_info = Gauge(
+    "router_client_info", "Nome, IP, tipo e rádio do cliente como labels (valor 1 se online)",
+    ["mac", "name", "ip", "type", "band"],
+)
 
 WANS = {"wan": "WAN1", "wan_2": "WAN2"}
 
@@ -76,14 +82,17 @@ def collect_clients(c: MiWifiClient) -> None:
     clients_online.set(sum(1 for d in devs if d.get("online")))
     for d in devs:
         st = d.get("statistics") or {}
-        key = (d.get("mac", ""), d.get("name") or d.get("hostname") or "", d.get("ip", ""))
+        mac = d.get("mac", "")
         num = lambda k: float(st.get(k) or 0)  # noqa: E731
-        cl_up_speed.labels(*key).set(num("upspeed"))
-        cl_down_speed.labels(*key).set(num("downspeed"))
-        cl_up_total.labels(*key).set(num("upload"))
-        cl_down_total.labels(*key).set(num("download"))
-        cl_online_s.labels(*key).set(num("online"))
-        cl_info.labels(*key, d.get("type", ""), st.get("dev", "")).set(1 if d.get("online") else 0)
+        cl_up_speed.labels(mac).set(num("upspeed"))
+        cl_down_speed.labels(mac).set(num("downspeed"))
+        cl_up_total.labels(mac).set(num("upload"))
+        cl_down_total.labels(mac).set(num("download"))
+        cl_online_s.labels(mac).set(num("online"))
+        cl_info.labels(
+            mac, d.get("name") or d.get("hostname") or "", d.get("ip", ""),
+            d.get("type", ""), st.get("dev", ""),
+        ).set(1 if d.get("online") else 0)
 
 
 def main() -> None:
