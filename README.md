@@ -9,7 +9,11 @@ docker compose up -d --build
 ```
 Grafana: http://localhost:3000 (admin/admin por padrão) → dashboard "Xiaomi BE6500 - WANs".
 
-![Dashboard WAN](./docs/images/WAN-dashbord.png)
+![Dashboard WAN](./docs/images/WAN-dashboard.png)
+
+Clientes da LAN (velocidade, consumo e tempo conectado) ficam no dashboard "Xiaomi BE6500 - LAN (clientes)":
+
+![Dashboard LAN](./docs/images/LAN-dashboard.png)
 
 ## Endpoints do roteador usados
 - `api/misystem/get_ps_service?service=multiwan` – habilitado, política, WAN ativa, pesos
