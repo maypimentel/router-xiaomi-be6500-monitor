@@ -1,0 +1,395 @@
+{
+ "uid": "xiaomi-lan",
+ "title": "Xiaomi BE6500 - LAN (clientes)",
+ "schemaVersion": 39,
+ "refresh": "15s",
+ "time": {
+  "from": "now-6h",
+  "to": "now"
+ },
+ "panels": [
+  {
+   "id": 11,
+   "type": "stat",
+   "title": "Clientes online",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 0,
+    "w": 4,
+    "h": 4
+   },
+   "targets": [
+    {
+     "expr": "router_clients_online",
+     "refId": "A"
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {},
+    "overrides": []
+   }
+  },
+  {
+   "id": 12,
+   "type": "stat",
+   "title": "Clientes conhecidos",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "x": 4,
+    "y": 0,
+    "w": 4,
+    "h": 4
+   },
+   "targets": [
+    {
+     "expr": "router_clients_known",
+     "refId": "A"
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {},
+    "overrides": []
+   }
+  },
+  {
+   "id": 13,
+   "type": "stat",
+   "title": "Download total (clientes)",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "x": 8,
+    "y": 0,
+    "w": 4,
+    "h": 4
+   },
+   "targets": [
+    {
+     "expr": "sum(router_client_download_bytes_per_second)",
+     "refId": "A"
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "Bps"
+    },
+    "overrides": []
+   }
+  },
+  {
+   "id": 14,
+   "type": "stat",
+   "title": "Upload total (clientes)",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "x": 12,
+    "y": 0,
+    "w": 4,
+    "h": 4
+   },
+   "targets": [
+    {
+     "expr": "sum(router_client_upload_bytes_per_second)",
+     "refId": "A"
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "Bps"
+    },
+    "overrides": []
+   }
+  },
+  {
+   "id": 15,
+   "type": "timeseries",
+   "title": "Download por cliente (top 10)",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 4,
+    "w": 12,
+    "h": 9
+   },
+   "targets": [
+    {
+     "expr": "topk(10, router_client_download_bytes_per_second > 0)",
+     "legendFormat": "{{name}} ({{ip}})",
+     "refId": "A"
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "Bps",
+     "min": 0
+    },
+    "overrides": []
+   },
+   "options": {
+    "legend": {
+     "displayMode": "table",
+     "placement": "right",
+     "calcs": [
+      "mean",
+      "max"
+     ]
+    },
+    "tooltip": {
+     "mode": "multi",
+     "sort": "desc"
+    }
+   }
+  },
+  {
+   "id": 17,
+   "type": "timeseries",
+   "title": "Upload por cliente (top 10)",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "x": 12,
+    "y": 4,
+    "w": 12,
+    "h": 9
+   },
+   "targets": [
+    {
+     "expr": "topk(10, router_client_upload_bytes_per_second > 0)",
+     "legendFormat": "{{name}} ({{ip}})",
+     "refId": "A"
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "Bps",
+     "min": 0
+    },
+    "overrides": []
+   },
+   "options": {
+    "legend": {
+     "displayMode": "table",
+     "placement": "right",
+     "calcs": [
+      "mean",
+      "max"
+     ]
+    },
+    "tooltip": {
+     "mode": "multi",
+     "sort": "desc"
+    }
+   }
+  },
+  {
+   "id": 16,
+   "type": "table",
+   "title": "Clientes",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 13,
+    "w": 24,
+    "h": 12
+   },
+   "targets": [
+    {
+     "expr": "router_client_info",
+     "format": "table",
+     "instant": true,
+     "refId": "A"
+    },
+    {
+     "expr": "router_client_download_bytes_per_second",
+     "format": "table",
+     "instant": true,
+     "refId": "B"
+    },
+    {
+     "expr": "router_client_upload_bytes_per_second",
+     "format": "table",
+     "instant": true,
+     "refId": "C"
+    },
+    {
+     "expr": "router_client_download_bytes",
+     "format": "table",
+     "instant": true,
+     "refId": "D"
+    },
+    {
+     "expr": "router_client_upload_bytes",
+     "format": "table",
+     "instant": true,
+     "refId": "E"
+    },
+    {
+     "expr": "router_client_online_seconds",
+     "format": "table",
+     "instant": true,
+     "refId": "F"
+    }
+   ],
+   "transformations": [
+    {
+     "id": "joinByField",
+     "options": {
+      "byField": "mac",
+      "mode": "outer"
+     }
+    },
+    {
+     "id": "organize",
+     "options": {
+      "excludeByName": {
+       "Time": true,
+       "__name__": true,
+       "job": true,
+       "instance": true,
+       "name 2": true,
+       "name 3": true,
+       "name 4": true,
+       "name 5": true,
+       "name 6": true,
+       "ip 2": true,
+       "ip 3": true,
+       "ip 4": true,
+       "ip 5": true,
+       "ip 6": true,
+       "Time 1": true,
+       "Time 2": true,
+       "Time 3": true,
+       "Time 4": true,
+       "Time 5": true,
+       "Time 6": true,
+       "job 1": true,
+       "job 2": true,
+       "job 3": true,
+       "job 4": true,
+       "job 5": true,
+       "job 6": true,
+       "instance 1": true,
+       "instance 2": true,
+       "instance 3": true,
+       "instance 4": true,
+       "instance 5": true,
+       "instance 6": true,
+       "__name__ 1": true,
+       "__name__ 2": true,
+       "__name__ 3": true,
+       "__name__ 4": true,
+       "__name__ 5": true,
+       "__name__ 6": true
+      },
+      "renameByName": {
+       "Value #A": "Online",
+       "Value #B": "Download",
+       "Value #C": "Upload",
+       "Value #D": "Total baixado",
+       "Value #E": "Total enviado",
+       "Value #F": "Conectado h\u00e1",
+       "name 1": "Nome",
+       "ip 1": "IP",
+       "type": "Tipo",
+       "band": "R\u00e1dio",
+       "mac": "MAC"
+      }
+     }
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {},
+    "overrides": [
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Download"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "Bps"
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Upload"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "Bps"
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Total baixado"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "bytes"
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Total enviado"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "bytes"
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Conectado h\u00e1"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "s"
+       }
+      ]
+     }
+    ]
+   },
+   "options": {
+    "sortBy": [
+     {
+      "displayName": "Download",
+      "desc": true
+     }
+    ]
+   }
+  }
+ ]
+}
