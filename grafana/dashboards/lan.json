@@ -241,6 +241,130 @@
    }
   },
   {
+   "id": 18,
+   "type": "bargauge",
+   "title": "Ranking: 10 maiores downloads",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "description": "Volume trafegado desde que o dispositivo conectou (zera quando ele reconecta).",
+   "gridPos": {
+    "x": 0,
+    "y": 13,
+    "w": 12,
+    "h": 10
+   },
+   "targets": [
+    {
+     "expr": "sort_desc(topk(10, router_client_download_bytes))",
+     "instant": true,
+     "legendFormat": "{{name}} ({{ip}})",
+     "refId": "A"
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "bytes",
+     "min": 0,
+     "decimals": 1,
+     "color": {
+      "mode": "fixed",
+      "fixedColor": "blue"
+     },
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "blue",
+        "value": null
+       }
+      ]
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "orientation": "horizontal",
+    "displayMode": "basic",
+    "valueMode": "text",
+    "showUnfilled": true,
+    "namePlacement": "left",
+    "sizing": "auto",
+    "minVizHeight": 16,
+    "maxVizHeight": 24,
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "fields": "",
+     "values": false
+    }
+   }
+  },
+  {
+   "id": 19,
+   "type": "bargauge",
+   "title": "Ranking: 10 maiores uploads",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "description": "Volume trafegado desde que o dispositivo conectou (zera quando ele reconecta).",
+   "gridPos": {
+    "x": 12,
+    "y": 13,
+    "w": 12,
+    "h": 10
+   },
+   "targets": [
+    {
+     "expr": "sort_desc(topk(10, router_client_upload_bytes))",
+     "instant": true,
+     "legendFormat": "{{name}} ({{ip}})",
+     "refId": "A"
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "bytes",
+     "min": 0,
+     "decimals": 1,
+     "color": {
+      "mode": "fixed",
+      "fixedColor": "orange"
+     },
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "orange",
+        "value": null
+       }
+      ]
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "orientation": "horizontal",
+    "displayMode": "basic",
+    "valueMode": "text",
+    "showUnfilled": true,
+    "namePlacement": "left",
+    "sizing": "auto",
+    "minVizHeight": 16,
+    "maxVizHeight": 24,
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "fields": "",
+     "values": false
+    }
+   }
+  },
+  {
    "id": 16,
    "type": "table",
    "title": "Clientes",
@@ -250,7 +374,7 @@
    },
    "gridPos": {
     "x": 0,
-    "y": 13,
+    "y": 23,
     "w": 24,
     "h": 12
    },
