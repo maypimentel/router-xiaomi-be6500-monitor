@@ -30,7 +30,25 @@ Clientes da LAN (velocidade, consumo e tempo conectado) ficam no dashboard "Xiao
 - WAN (`wan-alerts.yml`): WAN1 caiu, WAN2 caiu (com multiwan ativo), roteador sem resposta.
 - LAN (`lan-alerts.yml`): novo dispositivo na rede (MAC não visto nos 7 dias anteriores). Só começa a avaliar após ~30 min de coleta.
 
-`tools/discover.py` lista as APIs que a página principal usa (útil se o firmware mudar).
+## Descobrir endpoints da API (`tools/discover.py`)
+O script faz login no roteador, baixa a página inicial da interface web e lista as URLs de API (`api/...`) e os arquivos `.js` que ela referencia. A página completa fica salva em `home.html` (ignorado pelo git) para inspeção manual.
+
+**Quando rodar**
+- Depois de atualizar o firmware do roteador, se o exporter começar a falhar (`router_scrape_success = 0`) ou se métricas passarem a vir zeradas: um endpoint pode ter mudado de nome ou de formato.
+- Ao querer coletar uma informação nova: procure na lista um endpoint candidato e consulte-o para ver o JSON. Foi assim que `macbind_info` foi encontrado.
+
+**Como rodar** (a partir da raiz do repositório):
+```
+pip install -r requirements.txt
+ROUTER_PASSWORD='sua-senha' python tools/discover.py
+```
+Ou num container, sem Python local, usando o `ROUTER_PASSWORD` do `.env`:
+```
+docker run --rm --env-file .env -v "$PWD":/app -w /app python:3.12-slim \
+  sh -c "pip install -q -r requirements.txt && python tools/discover.py"
+```
+
+A saída contém o token de sessão (`stok=...`) e o `home.html` também; não publique nenhum dos dois. Para consultar um endpoint da lista, use o mesmo token: `curl "http://192.168.31.1/cgi-bin/luci/;stok=<token>/api/<endpoint>"`. A lista cobre só o que a página inicial referencia; APIs de outras telas podem estar nos arquivos `.js` listados (linhas `js:`).
 
 ## Alertas no Telegram (atualmente DESATIVADO)
 Para ativar: `rm grafana/provisioning/alerting/telegram-off.yml && mv grafana/provisioning/alerting/telegram.yml.disabled grafana/provisioning/alerting/telegram.yml`, depois siga os passos abaixo.
